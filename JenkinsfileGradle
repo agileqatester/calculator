@@ -18,7 +18,7 @@ pipeline {
       }
     }
 */	
-    stage("Code coverage") {
+/*    stage("Code coverage") {
       steps {
         sh "./gradlew jacocoTestReport"
         publishHTML (target: [
@@ -92,6 +92,7 @@ pipeline {
       steps {
 	sh "./smoke_test.sh 192.168.0.115"
       }
-    }
+    } 
+    */
   }
 }
