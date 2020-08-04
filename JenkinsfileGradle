@@ -12,23 +12,13 @@ pipeline {
       }
     }
 	  
-<<<<<<< HEAD
- //   stage("Unit test") {
-  //     steps {
-   //      sh "./gradlew test"
-   //   }
-   // }
-	
-    stage("Code coverage") {
-=======
-/*    stage("Unit test") {
+    stage("Unit test") {
       steps {
         sh "./gradlew test"
       }
     }
-*/	
+	
 /*    stage("Code coverage") {
->>>>>>> 4540dc7e6f5b3d6798d256ede1e3bcfea25cd140
       steps {
         sh "./gradlew jacocoTestReport"
         publishHTML (target: [
