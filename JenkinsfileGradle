@@ -12,11 +12,11 @@ pipeline {
       }
     }
 	  
-    stage("Unit test") {
-      steps {
-        sh "./gradlew test"
-      }
-    }
+ //   stage("Unit test") {
+  //     steps {
+   //      sh "./gradlew test"
+   //   }
+   // }
 	
     stage("Code coverage") {
       steps {
