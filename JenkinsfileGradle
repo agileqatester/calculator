@@ -18,7 +18,7 @@ pipeline {
       }
     }
 	
-/*    stage("Code coverage") {
+    stage("Code coverage") {
       steps {
         sh "./gradlew jacocoTestReport"
         publishHTML (target: [
@@ -28,7 +28,7 @@ pipeline {
         sh "./gradlew jacocoTestCoverageVerification"
       }
     }
-
+/*
     stage("Static code analysis") {
       steps {
         sh "./gradlew checkstyleMain"
@@ -38,14 +38,14 @@ pipeline {
                reportName: "Checkstyle Report" ])
       }
     }
-
+*/
     stage("Build") {
       steps {
         sh "./gradlew build"
       }
     }
 
-    stage("Docker build") {
+ /*   stage("Docker build") {
       steps {
         sh "docker build -t leszko/calculator:${BUILD_TIMESTAMP} ."
       }
