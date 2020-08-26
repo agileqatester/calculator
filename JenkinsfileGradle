@@ -29,7 +29,7 @@ pipeline {
       }
     }
 
-    stage("Static code analysis") {
+/*    stage("Static code analysis") {
       steps {
         sh "./gradlew checkstyleMain"
         publishHTML (target: [
@@ -38,7 +38,7 @@ pipeline {
                reportName: "Checkstyle Report" ])
       }
     }
-
+*/
     stage("Build") {
       steps {
         sh "./gradlew build"
