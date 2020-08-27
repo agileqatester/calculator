@@ -52,9 +52,14 @@ pipeline {
     }
 
     stage("Docker build") {
-      steps {
+/*      steps {
         sh "docker build -t leszko/calculator:${BUILD_NUMBER} ."
       }
+*/
+      steps{
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        }
     }
 /*
     stage("Docker login") {
@@ -67,8 +72,16 @@ pipeline {
     }
 */
     stage("Docker push") {
-      steps {
+/*      steps {
         sh "docker push leszko/calculator:${BUILD_NUMBER}"
+      }
+*/      
+        steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+          }
+        }
       }
     }
 /*
