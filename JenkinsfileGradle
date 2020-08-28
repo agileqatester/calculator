@@ -90,13 +90,14 @@ pipeline {
         sleep 60
       }
     }
-
+*/
     stage("Acceptance test") {
       steps {
-	sh "./acceptance_test.sh 192.168.0.166"
+        sleep 60
+	      sh "./curl_test.sh"
       }
     }
-	  
+	 /* 
     // Performance test stages
 
     stage("Release") {
