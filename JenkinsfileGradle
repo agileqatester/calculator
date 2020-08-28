@@ -54,7 +54,7 @@ pipeline {
     stage("Docker build") {
       steps{
         script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+          dockerImage = docker.build registry + ":latest"
         }
       }
     }
@@ -80,7 +80,7 @@ pipeline {
 
     stage("Deploy to staging") {
         steps {
-          sh "docker run -d --rm -p 8765:8080 --name calculator agileqa/calculator:$BUILD_NUMBER"
+          sh "docker run -d --rm -p 8765:8080 --name calculator agileqa/calculator:latest"
         }   
     }
 /*
