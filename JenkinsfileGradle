@@ -94,6 +94,7 @@ pipeline {
     stage("Acceptance test") {
       steps {
         sleep 60
+        sh "chmod 750 curl-test.sh"
 	      sh "./curl-test.sh"
       }
     }
