@@ -1,8 +1,0 @@
-version: "3"
-services:
-  calculator:
-    image: agileqa/calculator:latest
-    ports:
-      - 8080
-  redis:
-    image: redis:latest
