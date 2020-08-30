@@ -1,5 +1,9 @@
 pipeline {
      agent any
+     environment {
+          registry = "agileqa/calculator"
+          registryCredential = 'docker_hub_login'
+               }
      triggers {
           pollSCM('* * * * *')
      }
@@ -33,7 +37,8 @@ pipeline {
 
           stage("Docker build") {
                steps {
-                    sh "docker build -t leszko/calculator ."
+                    //sh "docker build -t leszko/calculator ."
+                    dockerImage = docker.build registry + ":latest"
                }
           }
 
@@ -48,13 +53,17 @@ pipeline {
 
           stage("Docker push") {
                steps {
-                    sh "docker push leszko/calculator"
+                    script {
+                         docker.withRegistry( '', registryCredential ) {
+                         dockerImage.push()
+                         }
+                    }
                }
           }
           
           stage("Deploy to staging") {
                steps {
-                    sh "docker run -d --rm -p 8765:8080 --name calculator leszko/calculator"
+                    sh "docker run -d --rm -p 8765:8080 --name calculator agileqa/calculator"
                }
           }
 
