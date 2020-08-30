@@ -1,31 +1,73 @@
 pipeline {
-   agent any
-
-   tools {
-      // Install the Maven version configured as "M3" and add it to the path.
-      maven "M3"
-   }
-
-   stages {
-      stage('Git') {
-        steps {
-            // Get some code from a GitHub repository
-            git 'https://github.com/agileqatester/calculator.git'
-        }
-      }   
-      stage('Build'){
-          steps{
-            // Run Maven on a Unix agent.
-            sh 'mvn -f calculator/pom.xml clean compile'
+     agent any
+     triggers {
+          pollSCM('* * * * *')
+     }
+     stages {
+          stage("Compile") {
+               steps {
+                    sh "./gradlew compileJava"
+               }
           }
-      }
-      stage('Unit Test'){
-          steps{
-            // Run Maven on a Unix agent.
-            sh 'cd calculator;pwd;mvn test'
+          stage("Unit test") {
+               steps {
+                    sh "./gradlew test"
+               }
           }
-      }
-            // To run Maven on a Windows agent, use
-            // bat "mvn -Dmaven.test.failure.ignore=true clean package"
-      }
+          stage("Code coverage") {
+               steps {
+                    sh "./gradlew jacocoTestReport"
+                    sh "./gradlew jacocoTestCoverageVerification"
+               }
+          }
+          stage("Static code analysis") {
+               steps {
+                    sh "./gradlew checkstyleMain"
+               }
+          }
+          stage("Package") {
+               steps {
+                    sh "./gradlew build"
+               }
+          }
+
+          stage("Docker build") {
+               steps {
+                    sh "docker build -t leszko/calculator ."
+               }
+          }
+
+          stage("Docker login") {
+               steps {
+                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-hub-credentials',
+                               usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                         sh "docker login --username $USERNAME --password $PASSWORD"
+                    }
+               }
+          }
+
+          stage("Docker push") {
+               steps {
+                    sh "docker push leszko/calculator"
+               }
+          }
+          
+          stage("Deploy to staging") {
+               steps {
+                    sh "docker run -d --rm -p 8765:8080 --name calculator leszko/calculator"
+               }
+          }
+
+          stage("Acceptance test") {
+               steps {
+                    sleep 60
+                    sh "./gradlew acceptanceTest -Dcalculator.url=http://localhost:8765"
+               }
+          }
+     }
+     post {
+          always {
+               sh "docker stop calculator"
+          }
+     }
 }
