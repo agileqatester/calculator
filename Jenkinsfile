@@ -1,12 +1,15 @@
 pipeline {
      agent any
+     
      environment {
           registry = "agileqa/calculator"
           registryCredential = 'docker_hub_login'
                }
+     
      triggers {
           pollSCM('* * * * *')
      }
+     
      stages {
           stage("Compile") {
                steps {
@@ -37,17 +40,10 @@ pipeline {
 
           stage("Docker build") {
                steps {
+                     script {
                     //sh "docker build -t leszko/calculator ."
                     dockerImage = docker.build registry + ":latest"
-               }
-          }
-
-          stage("Docker login") {
-               steps {
-                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-hub-credentials',
-                               usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                         sh "docker login --username $USERNAME --password $PASSWORD"
-                    }
+                     }
                }
           }
 
